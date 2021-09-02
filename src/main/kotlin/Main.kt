@@ -7,6 +7,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
+var hadError = false;
+
 fun main(args: Array<String>) {
     if (args.size > 1) {
         println("Usage: jlox [script]")
@@ -21,6 +23,8 @@ fun main(args: Array<String>) {
 private fun runFile(path: String) {
     val bytes: ByteArray = Files.readAllBytes(Paths.get(path))
     run(String(bytes, Charset.defaultCharset()))
+
+    if (hadError) exitProcess(65)
 }
 
 private fun runPrompt() {
@@ -31,6 +35,7 @@ private fun runPrompt() {
         print("> ")
         val line = reader.readLine() ?: break
         run(line)
+        hadError = false
     }
 }
 
@@ -41,4 +46,13 @@ private fun run(source: String) {
     for (token in tokens) {
         println(token)
     }
+}
+
+fun error(line: Int, message: String) {
+    report(line, "", message)
+}
+
+fun report(line: Int, where: String, message: String) {
+    println("[line $line] Error$where: $message")
+    hadError = true
 }
