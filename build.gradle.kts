@@ -27,3 +27,7 @@ tasks.withType<KotlinCompile>() {
 application {
     mainClass.set("business.plants.klox.MainKt")
 }
+
+val run by tasks.getting(JavaExec::class) {
+    standardInput = System.`in`
+}
