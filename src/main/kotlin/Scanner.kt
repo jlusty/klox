@@ -28,7 +28,7 @@ class Scanner constructor(private val source: String) {
     private var line: Int = 1
 
     fun scanTokens(): List<Token> {
-        while(!isAtEnd()) {
+        while (!isAtEnd()) {
             // We are at the beginning of the next lexeme
             start = current
             scanToken()
@@ -61,7 +61,7 @@ class Scanner constructor(private val source: String) {
                 addToken(SLASH)
             }
             // Ignore whitespace
-            ' ', '\r', '\t' -> {}
+            ' ', '\r', '\t' -> Unit
             '\n' -> line++
             '"' -> string()
             else -> {

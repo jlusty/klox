@@ -7,7 +7,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
-var hadError = false;
+var hadError = false
 
 fun main(args: Array<String>) {
     if (args.size > 1) {
@@ -31,7 +31,7 @@ private fun runPrompt() {
     val input = InputStreamReader(System.`in`)
     val reader = BufferedReader(input)
 
-    while(true) {
+    while (true) {
         print("> ")
         val line = reader.readLine() ?: break
         run(line)
