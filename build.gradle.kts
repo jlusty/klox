@@ -5,7 +5,7 @@ plugins {
     application
 }
 
-group = "me.jplus"
+group = "business.plants"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -25,5 +25,5 @@ tasks.withType<KotlinCompile>() {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("business.plants.klox.MainKt")
 }

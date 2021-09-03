@@ -1,3 +1,1 @@
-
-rootProject.name = "jlox"
-
+rootProject.name = "klox"

@@ -1,6 +1,6 @@
-package business.plants.jlox
+package business.plants.klox
 
-import business.plants.jlox.TokenType.*
+import business.plants.klox.TokenType.*
 
 class Scanner constructor(private val source: String) {
     private val keywords: Map<String, TokenType> = hashMapOf(

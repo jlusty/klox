@@ -1,4 +1,4 @@
-package business.plants.jlox
+package business.plants.klox
 
 enum class TokenType {
     // Single character tokens
