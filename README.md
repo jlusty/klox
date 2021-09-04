@@ -9,4 +9,4 @@ Running `./gradlew run --args='C:\some\absolute\path\to\file.txt'` will allow yo
 
 ## Running code generation tool
 
-Running `kotlinc -script src/main/kotlin/business/plants/tool/GenerateAst.kts path/to/output/file.txt` will run the code generation script.
+Running `kotlinc -script src/main/kotlin/business/plants/tool/GenerateAst.kts src/main/kotlin/business/plants/klox/` will run the code generation script.

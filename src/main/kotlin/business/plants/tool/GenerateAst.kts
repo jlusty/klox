@@ -17,6 +17,13 @@ defineAst(
     )
 )
 
+defineAst(
+    outputDir, "Stmt", listOf(
+        "Expression - expression: Expr",
+        "Print - expression: Expr"
+    )
+)
+
 fun defineAst(outputDir: String, baseName: String, types: List<String>) {
     val path: String = "$outputDir/$baseName.kt"
     val writer = PrintWriter(path, "UTF-8")
