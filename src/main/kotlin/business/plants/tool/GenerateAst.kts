@@ -8,4 +8,5 @@ fun main(args: Array<String>) {
         exitProcess(64)
     }
     val outputDir = args[0]
+    println(outputDir)
 }
