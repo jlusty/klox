@@ -2,11 +2,12 @@ package business.plants.klox
 
 import business.plants.klox.TokenType.*
 
-class Interpreter : Expr.Visitor<Any?> {
-    fun interpret(expression: Expr) {
+class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
+    fun interpret(statements: List<Stmt>) {
         try {
-            val value: Any? = evaluate(expression)
-            println(stringify(value))
+            for (statement in statements) {
+                execute(statement)
+            }
         } catch (error: RuntimeError) {
             Klox.runtimeError(error)
         }
@@ -108,6 +109,19 @@ class Interpreter : Expr.Visitor<Any?> {
 
     private fun evaluate(expr: Expr): Any? {
         return expr.accept(this)
+    }
+
+    private fun execute(stmt: Stmt) {
+        stmt.accept(this)
+    }
+
+    override fun visitExpressionStmt(stmt: Stmt.Expression) {
+        evaluate(stmt.expression)
+    }
+
+    override fun visitPrintStmt(stmt: Stmt.Print) {
+        val value: Any? = evaluate(stmt.expression)
+        println(stringify(value))
     }
 
     private fun stringify(any: Any?): String {

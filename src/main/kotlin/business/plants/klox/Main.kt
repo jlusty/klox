@@ -7,7 +7,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
-
 fun main(args: Array<String>) {
     Klox.main(args)
 }
@@ -53,14 +52,12 @@ class Klox {
             val scanner = Scanner(source)
             val tokens: List<Token> = scanner.scanTokens()
             val parser = Parser(tokens)
-            val expression = parser.parse()
+            val statements = parser.parse()
 
             // Stop if there was a syntax error
             if (hadError) return
 
-            if (expression != null) {
-                interpreter.interpret(expression)
-            }
+            interpreter.interpret(statements)
         }
 
         fun error(line: Int, message: String) {

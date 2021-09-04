@@ -8,6 +8,7 @@ if (args.size != 1) {
     exitProcess(64)
 }
 val outputDir: String = args[0]
+
 defineAst(
     outputDir, "Expr", listOf(
         "Binary - left: Expr, operator: Token, right: Expr",
