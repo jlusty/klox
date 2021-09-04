@@ -2,7 +2,7 @@ package business.plants.klox
 
 import business.plants.klox.TokenType.*
 
-class Scanner constructor(private val source: String) {
+class Scanner(private val source: String) {
     private val keywords: Map<String, TokenType> = hashMapOf(
         "and" to AND,
         "class" to CLASS,
