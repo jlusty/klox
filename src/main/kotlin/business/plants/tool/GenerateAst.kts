@@ -12,7 +12,7 @@ defineAst(
     outputDir, "Expr", listOf(
         "Binary - left: Expr, operator: Token, right: Expr",
         "Grouping - expression: Expr",
-        "Literal - value: Any",
+        "Literal - value: Any?",
         "Unary - operator: Token, right: Expr",
     )
 )
@@ -21,10 +21,13 @@ fun defineAst(outputDir: String, baseName: String, types: List<String>) {
     val path: String = "$outputDir/$baseName.kt"
     val writer = PrintWriter(path, "UTF-8")
 
+    writer.println("// Generated code: produced by GenerateAst")
+    writer.println()
     writer.println("package business.plants.klox")
     writer.println()
     writer.println("abstract class $baseName {")
-    writer.println("    companion object {")
+
+    defineVisitor(writer, baseName, types)
 
     // The AST classes
     for (type in types) {
@@ -33,12 +36,34 @@ fun defineAst(outputDir: String, baseName: String, types: List<String>) {
         defineType(writer, baseName, className, fields)
     }
 
-    writer.println("    }")
+    // The base accept() method
+    writer.println("    abstract fun <R> accept(visitor: Visitor<R>): R")
+
     writer.println("}")
     writer.close()
 }
 
+fun defineVisitor(writer: PrintWriter, baseName: String, types: List<String>) {
+    writer.println("    interface Visitor<R> {")
+
+    for (type in types) {
+        val typeName: String = type.split("-")[0].trim()
+        writer.println("        fun visit$typeName$baseName(${baseName.lowercase()}: $typeName): R")
+    }
+
+    writer.println("    }")
+    writer.println()
+}
+
 fun defineType(writer: PrintWriter, baseName: String, className: String, fieldList: String) {
-    writer.println("        class $className($fieldList) : $baseName() {")
+    val fieldListVals = (fieldList.split(", ").map { field -> "val $field" }).joinToString(", ")
+    writer.println("    class $className($fieldListVals) : $baseName() {")
+
+    // Visitor pattern
+    writer.println("        override fun <R> accept(visitor: Visitor<R>): R {")
+    writer.println("            return visitor.visit$className$baseName(this)")
     writer.println("        }")
+
+    writer.println("    }")
+    writer.println()
 }
