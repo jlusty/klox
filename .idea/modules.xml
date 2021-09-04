@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/klox.iml" filepath="$PROJECT_DIR$/.idea/klox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/tool.iml" filepath="$PROJECT_DIR$/.idea/tool.iml" />
     </modules>
   </component>
 </project>
