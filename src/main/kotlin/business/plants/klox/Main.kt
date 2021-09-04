@@ -7,7 +7,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
-var hadError = false
 
 fun main(args: Array<String>) {
     Klox.main(args)
@@ -15,6 +14,10 @@ fun main(args: Array<String>) {
 
 class Klox {
     companion object {
+        private val interpreter = Interpreter()
+        var hadError = false
+        var hadRuntimeError = false
+
         fun main(args: Array<String>) {
             if (args.size > 1) {
                 println("Usage: klox [script]")
@@ -31,6 +34,7 @@ class Klox {
             run(String(bytes, Charset.defaultCharset()))
 
             if (hadError) exitProcess(65)
+            if (hadRuntimeError) exitProcess(70)
         }
 
         private fun runPrompt() {
@@ -54,7 +58,9 @@ class Klox {
             // Stop if there was a syntax error
             if (hadError) return
 
-            println(expression?.let { AstPrinter().print(it) })
+            if (expression != null) {
+                interpreter.interpret(expression)
+            }
         }
 
         fun error(line: Int, message: String) {
@@ -73,6 +79,11 @@ class Klox {
             } else {
                 report(token.line, " at '${token.lexeme}'", message)
             }
+        }
+
+        fun runtimeError(error: RuntimeError) {
+            println("${error.message}\n[line ${error.token.line}]")
+            hadRuntimeError = true
         }
     }
 }
