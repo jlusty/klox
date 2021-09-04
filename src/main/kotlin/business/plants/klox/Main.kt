@@ -54,7 +54,7 @@ class Klox {
             // Stop if there was a syntax error
             if (hadError) return
 
-            println(AstPrinter().print(expression))
+            println(expression?.let { AstPrinter().print(it) })
         }
 
         fun error(line: Int, message: String) {
