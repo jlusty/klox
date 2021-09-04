@@ -68,7 +68,7 @@ class Scanner(private val source: String) {
                 when {
                     isDigit(c) -> number()
                     isAlpha(c) -> identifier()
-                    else -> error(line, "Unexpected character")
+                    else -> Klox.error(line, "Unexpected character")
                 }
             }
         }
@@ -102,7 +102,7 @@ class Scanner(private val source: String) {
         }
 
         if (isAtEnd()) {
-            error(line, "Unterminated string")
+            Klox.error(line, "Unterminated string")
             return
         }
 
