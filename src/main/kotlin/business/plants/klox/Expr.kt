@@ -4,11 +4,18 @@ package business.plants.klox
 
 abstract class Expr {
     interface Visitor<R> {
+        fun visitAssignExpr(expr: Assign): R
         fun visitBinaryExpr(expr: Binary): R
         fun visitGroupingExpr(expr: Grouping): R
         fun visitLiteralExpr(expr: Literal): R
         fun visitUnaryExpr(expr: Unary): R
         fun visitVariableExpr(expr: Variable): R
+    }
+
+    class Assign(val name: Token, val value: Expr) : Expr() {
+        override fun <R> accept(visitor: Visitor<R>): R {
+            return visitor.visitAssignExpr(this)
+        }
     }
 
     class Binary(val left: Expr, val operator: Token, val right: Expr) : Expr() {
