@@ -94,7 +94,7 @@ class Parser(private val tokens: List<Token>) {
     }
 
     private fun assignment(): Expr {
-        val expr = equality()
+        val expr = or()
 
         if (match(EQUAL)) {
             val equals: Token = previous()
@@ -106,6 +106,28 @@ class Parser(private val tokens: List<Token>) {
             }
 
             error(equals, "Invalid assignment target")
+        }
+
+        return expr
+    }
+
+    private fun or(): Expr {
+        var expr: Expr = and()
+        while (match(OR)) {
+            val operator: Token = previous()
+            val right: Expr = and()
+            expr = Expr.Logical(expr, operator, right)
+        }
+
+        return expr
+    }
+
+    private fun and(): Expr {
+        var expr: Expr = equality()
+        while (match(AND)) {
+            val operator: Token = previous()
+            val right: Expr = equality()
+            expr = Expr.Logical(expr, operator, right)
         }
 
         return expr
