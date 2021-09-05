@@ -13,6 +13,7 @@ defineAst(
     outputDir, "Expr", listOf(
         "Assign - name: Token, value: Expr",
         "Binary - left: Expr, operator: Token, right: Expr",
+        "Call - callee: Expr, paren: Token, arguments: List<Expr>",
         "Grouping - expression: Expr",
         "Literal - value: Any?",
         "Logical - left: Expr, operator: Token, right: Expr",
