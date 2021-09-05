@@ -1,8 +1,8 @@
 package business.plants.klox
 
-class LoxFunction(private val declaration: Stmt.Function) : LoxCallable {
+class LoxFunction(private val declaration: Stmt.Function, private val closure: Environment) : LoxCallable {
     override fun call(interpreter: Interpreter, arguments: List<Any?>): Any? {
-        val environment = Environment(interpreter.globals) // TODO: This is putting functions under global scope??
+        val environment = Environment(closure)
         for (i in 0 until declaration.params.size) {
             environment.define(declaration.params[i].lexeme, arguments[i])
         }
