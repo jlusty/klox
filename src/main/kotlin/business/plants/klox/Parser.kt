@@ -1,12 +1,11 @@
 package business.plants.klox
 
 import business.plants.klox.TokenType.*
-import kotlin.collections.ArrayList
 
 class Parser(private val tokens: List<Token>) {
-    private class ParseError : RuntimeException() {}
+    private class ParseError : RuntimeException()
 
-    private var current: Int = 0;
+    private var current: Int = 0
 
     fun parse(): List<Stmt> {
         val statements: MutableList<Stmt> = ArrayList()
@@ -39,6 +38,7 @@ class Parser(private val tokens: List<Token>) {
         if (match(FOR)) return forStatement()
         if (match(IF)) return ifStatement()
         if (match(PRINT)) return printStatement()
+        if (match(RETURN)) return returnStatement()
         if (match(WHILE)) return whileStatement()
         if (match(LEFT_BRACE)) return Stmt.Block(block())
 
@@ -105,10 +105,22 @@ class Parser(private val tokens: List<Token>) {
         return Stmt.Print(value)
     }
 
+    private fun returnStatement(): Stmt {
+        val keyword: Token = previous()
+        val value: Expr? = if (check(SEMICOLON)) {
+            null
+        } else {
+            expression()
+        }
+
+        consume(SEMICOLON, "Expect ';' after return value")
+        return Stmt.Return(keyword, value)
+    }
+
     private fun varDeclaration(): Stmt {
         val name: Token = consume(IDENTIFIER, "Expect variable name")
 
-        var initializer: Expr? = null;
+        var initializer: Expr? = null
         if (match(EQUAL)) {
             initializer = expression()
         }

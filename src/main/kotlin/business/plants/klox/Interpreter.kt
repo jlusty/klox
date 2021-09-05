@@ -99,7 +99,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
             throw RuntimeError(expr.paren, "Can only call functions and classes")
         }
 
-        val function: LoxCallable = callee;
+        val function: LoxCallable = callee
         if (arguments.size != function.arity()) {
             throw RuntimeError(expr.paren, "Expected ${function.arity()} arguments but got ${arguments.size}")
         }
@@ -178,7 +178,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     fun executeBlock(statements: List<Stmt>, environment: Environment) {
         val previous: Environment = this.environment
         try {
-            this.environment = environment;
+            this.environment = environment
 
             for (statement in statements) {
                 execute(statement)
@@ -212,6 +212,13 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     override fun visitPrintStmt(stmt: Stmt.Print) {
         val value: Any? = evaluate(stmt.expression)
         println(stringify(value))
+    }
+
+    override fun visitReturnStmt(stmt: Stmt.Return) {
+        var value: Any? = null
+        if (stmt.value != null) value = evaluate(stmt.value)
+
+        throw Return(value)
     }
 
     override fun visitVarStmt(stmt: Stmt.Var) {
