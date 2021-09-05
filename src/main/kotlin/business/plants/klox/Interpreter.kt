@@ -3,7 +3,7 @@ package business.plants.klox
 import business.plants.klox.TokenType.*
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    private val environment: Environment = Environment()
+    private var environment: Environment = Environment()
 
     fun interpret(statements: List<Stmt>) {
         try {
@@ -125,6 +125,23 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     private fun execute(stmt: Stmt) {
         stmt.accept(this)
+    }
+
+    private fun executeBlock(statements: List<Stmt>, environment: Environment) {
+        val previous: Environment = this.environment
+        try {
+            this.environment = environment;
+
+            for (statement in statements) {
+                execute(statement)
+            }
+        } finally {
+            this.environment = previous
+        }
+    }
+
+    override fun visitBlockStmt(stmt: Stmt.Block) {
+        executeBlock(stmt.statements, Environment(environment))
     }
 
     override fun visitExpressionStmt(stmt: Stmt.Expression) {
