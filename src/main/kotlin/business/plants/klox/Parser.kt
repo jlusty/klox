@@ -26,6 +26,7 @@ class Parser(private val tokens: List<Token>) {
 
     private fun declaration(): Stmt? {
         try {
+            if (match(FUN)) return function("function")
             if (match(VAR)) return varDeclaration()
             return statement()
         } catch (error: ParseError) {
@@ -129,6 +130,24 @@ class Parser(private val tokens: List<Token>) {
         val expr: Expr = expression()
         consume(SEMICOLON, "Expect ';' after value")
         return Stmt.Expression(expr)
+    }
+
+    private fun function(kind: String): Stmt.Function {
+        val name: Token = consume(IDENTIFIER, "Expect $kind name")
+        consume(LEFT_PAREN, "Expect '(' after $kind name")
+        val parameters: MutableList<Token> = ArrayList()
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (parameters.size >= 255) {
+                    error(peek(), "Can't have more than 255 parameters")
+                }
+                parameters.add(consume(IDENTIFIER, "Expect parameter name"))
+            } while (match(COMMA))
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters")
+        consume(LEFT_BRACE, "Expect '{' before $kind body")
+        val body: List<Stmt> = block()
+        return Stmt.Function(name, parameters, body)
     }
 
     private fun block(): List<Stmt> {
