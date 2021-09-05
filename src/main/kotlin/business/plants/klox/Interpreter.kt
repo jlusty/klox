@@ -3,7 +3,24 @@ package business.plants.klox
 import business.plants.klox.TokenType.*
 
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
-    private var environment: Environment = Environment()
+    val globals: Environment = Environment()
+    private var environment: Environment = globals
+
+    init {
+        globals.define("clock", object : LoxCallable {
+            override fun arity(): Int {
+                return 0
+            }
+
+            override fun call(interpreter: Interpreter, arguments: List<Any?>): Double {
+                return System.currentTimeMillis() / 1000.0
+            }
+
+            override fun toString(): String {
+                return "<native fn>"
+            }
+        })
+    }
 
     fun interpret(statements: List<Stmt>) {
         try {
@@ -86,7 +103,7 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
         if (arguments.size != function.arity()) {
             throw RuntimeError(expr.paren, "Expected ${function.arity()} arguments but got ${arguments.size}")
         }
-        
+
         return function.call(this, arguments)
     }
 
