@@ -5,6 +5,7 @@ import business.plants.klox.TokenType.*
 class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     val globals: Environment = Environment()
     private var environment: Environment = globals
+    private val locals: MutableMap<Expr, Int> = HashMap()
 
     init {
         globals.define("clock", object : LoxCallable {
@@ -34,7 +35,13 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     override fun visitAssignExpr(expr: Expr.Assign): Any? {
         val value: Any? = evaluate(expr.value)
-        environment.assign(expr.name, value)
+
+        val distance: Int? = locals[expr]
+        if (distance != null) {
+            environment.assignAt(distance, expr.name, value)
+        } else {
+            globals.assign(expr.name, value)
+        }
         return value
     }
 
@@ -142,7 +149,16 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
     }
 
     override fun visitVariableExpr(expr: Expr.Variable): Any? {
-        return environment.get(expr.name)
+        return lookUpVariable(expr.name, expr)
+    }
+
+    private fun lookUpVariable(name: Token, expr: Expr): Any? {
+        val distance: Int? = locals[expr]
+        return if (distance != null) {
+            environment.getAt(distance, name.lexeme)
+        } else {
+            globals.get(name)
+        }
     }
 
     private fun isTruthy(any: Any?): Boolean {
@@ -173,6 +189,10 @@ class Interpreter : Expr.Visitor<Any?>, Stmt.Visitor<Unit> {
 
     private fun execute(stmt: Stmt) {
         stmt.accept(this)
+    }
+
+    fun resolve(expr: Expr, depth: Int) {
+        locals[expr] = depth
     }
 
     fun executeBlock(statements: List<Stmt>, environment: Environment) {
